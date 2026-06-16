@@ -15,9 +15,18 @@
     </padding>
 
     <HBox spacing="10.0" alignment="CENTER">
-        <TextField fx:id="campoNovaTarefa" promptText="Digite uma nova tarefa..." HBox.hgrow="ALWAYS"  onAction="#onAdicionarTarefaClick"/>
+        <TextField fx:id="campoNovaTarefa" promptText="Digite a nova missão..." HBox.hgrow="ALWAYS"  onAction="#onAdicionarTarefaClick"/>
         <Button text="Adicionar" onAction="#onAdicionarTarefaClick" />
     </HBox>
 
-    <ListView fx:id="listaTarefas" VBox.vgrow="ALWAYS" />
+    <ListView fx:id="listaTarefas" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets bottom="10.0" />
+        </VBox.margin>
+    </ListView>
+
+
+    <Button text="COMPLETAR MISSÃO" onAction="#onCompletarMissaoClick" maxWidth="Infinity" styleClass="btn-sucesso"/>
+
+    <Button text="FRACASSAR MISSÃO" onAction="#onFracassarMissaoClick" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="btn-fracasso" />
 </VBox>

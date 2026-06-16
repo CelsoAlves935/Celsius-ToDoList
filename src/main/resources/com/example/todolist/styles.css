@@ -76,3 +76,29 @@
     -fx-background-color: rgba(69, 243, 255, 0.2); /* Destaque azul ao selecionar */
     -fx-text-fill: #45f3ff;
 }
+
+/* Botão estilo sucesso (Verde Militar / Holográfico) */
+.btn-sucesso {
+    -fx-background-color: linear-gradient(to bottom, #116530, #0B4619);
+    -fx-border-color: #00FF66 #05210C #05210C #00FF66;
+}
+.btn-sucesso:hover {
+    -fx-background-color: linear-gradient(to bottom, #188742, #116530);
+}
+.btn-sucesso:armed {
+    -fx-background-color: linear-gradient(to bottom, #05210C, #0B4619);
+    -fx-border-color: #05210C #00FF66 #00FF66 #05210C;
+}
+
+/* Botão estilo fracasso (Vermelho Alerta / Destrutivo) */
+.btn-fracasso {
+    -fx-background-color: linear-gradient(to bottom, #8b0000, #4a0000);
+    -fx-border-color: #ff3333 #210000 #210000 #ff3333;
+}
+.btn-fracasso:hover {
+    -fx-background-color: linear-gradient(to bottom, #b30000, #8b0000);
+}
+.btn-fracasso:armed {
+    -fx-background-color: linear-gradient(to bottom, #210000, #4a0000);
+    -fx-border-color: #210000 #ff3333 #ff3333 #210000;
+}
