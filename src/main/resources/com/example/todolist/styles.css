@@ -1,0 +1,78 @@
+/* 1. O Fundo do Aplicativo com a sua Imagem */
+.root {
+    -fx-background-image: url("fundo.png");
+    -fx-background-size: cover; /* Faz a imagem cobrir a janela toda */
+    -fx-background-position: center;
+    -fx-padding: 20px;
+}
+
+/* 2. O Campo de Texto (Estilo Terminal) */
+.text-field {
+    -fx-background-color: #0b0c10;
+    -fx-text-fill: #66fcf1; /* Texto em Azul Ciano brilhante */
+    -fx-border-color: #1f2833;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-font-family: "Consolas", monospace;
+}
+.text-field:focused {
+    -fx-border-color: #45f3ff; /* Brilha mais forte quando selecionado */
+}
+
+/* 3. O Botão 3D (Efeito de relevo clássico de jogos) */
+.button {
+    /* Degradê linear: topo mais claro, base mais escura para dar volume */
+    -fx-background-color: linear-gradient(to bottom, #1f4068, #162447);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-family: "Impact", "Arial Black", sans-serif;
+    -fx-font-size: 13px;
+
+    /* Borda interna clara no topo e escura na base (Truque do efeito 3D) */
+    -fx-border-color: #45f3ff #0f172a #0f172a #45f3ff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 3px;
+
+    /* Sombra projetada atrás do botão */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 3);
+}
+
+.button:hover {
+    /* Clarea o botão quando o mouse passa por cima */
+    -fx-background-color: linear-gradient(to bottom, #244d7d, #1b2d5a);
+    -fx-cursor: hand;
+}
+
+.button:armed {
+    /* Efeito de "afundar" o botão 3D quando clicado */
+    -fx-background-color: linear-gradient(to bottom, #111b35, #162447);
+    -fx-border-color: #0f172a #45f3ff #45f3ff #0f172a; /* Inverte as bordas */
+    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.8), 5, 0.0, 0, 1);
+}
+
+/* 4. A Lista de Missões Transparente (Deixa ver o fundo) */
+.list-view {
+    /* Fundo preto com 75% de opacidade (semi-transparente) */
+    -fx-background-color: rgba(10, 12, 16, 0.75);
+    -fx-border-color: #1f4068;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Elementos dentro da lista */
+.list-cell {
+    -fx-background-color: transparent; /* Transparente para não cobrir a lista */
+    -fx-text-fill: #e4e4e7;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-color: transparent transparent rgba(69, 243, 255, 0.2) transparent; /* Linha sutil azul separando missões */
+}
+
+.list-cell:selected {
+    -fx-background-color: rgba(69, 243, 255, 0.2); /* Destaque azul ao selecionar */
+    -fx-text-fill: #45f3ff;
+}
