@@ -1,116 +1,245 @@
 package com.example.todolist;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.animation.PauseTransition;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HelloController {
 
-    // Conecta com o campo de digitação do usuario
-    @FXML
-    private TextField campoNovaTarefa;
+    @FXML private TextField campoNovaTarefa;
+    @FXML private FlowPane mosaicoMissoes;
+
+    @FXML private VBox overlayPopup;
+    @FXML private Label lblPopupTitulo;
+    @FXML private TextField campoNovaEtapa;
+    @FXML private VBox containerEtapas;
+
+    private String categoriaAtual = "IMPORTANTES";
+    private final List<Missao> bancoDeMissoes = new ArrayList<>();
+
+    private String tituloTemporario = "";
+    private final List<CheckBox> checkboxesTemporarios = new ArrayList<>();
+    private Missao missaoEmExibicao = null;
 
     @FXML
-    private ListView<String> listaTarefas;
+    protected void onCategoriaClick(ActionEvent event) {
+        Button botaoClicado = (Button) event.getSource();
+        if (botaoClicado.getUserData() != null) {
+            categoriaAtual = botaoClicado.getUserData().toString();
+            atualizarMosaicoNaTela();
+        }
+    }
 
     @FXML
     protected void onAdicionarTarefaClick() {
-        String textoTarefa = campoNovaTarefa.getText().trim();
+        String textoInput = campoNovaTarefa.getText().trim();
 
-        if (!textoTarefa.isEmpty()) {
-            listaTarefas.getItems().add(textoTarefa);
+        if (!textoInput.isEmpty()) {
+            tituloTemporario = textoInput.toUpperCase();
+            missaoEmExibicao = null;
 
+            lblPopupTitulo.setText(tituloTemporario);
+            containerEtapas.getChildren().clear();
+            checkboxesTemporarios.clear();
+
+            overlayPopup.setVisible(true);
             campoNovaTarefa.clear();
         }
     }
 
     @FXML
-    protected void onCompletarMissaoClick() {
-        // 1. Descobrir qual linha o usuário clicou
-        int indiceSelecionado = listaTarefas.getSelectionModel().getSelectedIndex();
+    protected void onAdicionarEtapaClick() {
+        String etapaTexto = campoNovaEtapa.getText().trim();
+        if (!etapaTexto.isEmpty()) {
+            CheckBox cb = new CheckBox(etapaTexto);
+            cb.getStyleClass().add("popup-checkbox");
 
-        // 2. O JavaFx retorna -1 se o usuário clicar no botão sem selecionar a missão.
-        if (indiceSelecionado >= 0) {
-            listaTarefas.getItems().remove(indiceSelecionado);
-            exibirPopupGif("sucesso.gif");
-        } else {
-            System.out.println("Nenhuma missão foi selecionada para ser completada!");
+            cb.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if (missaoEmExibicao != null) {
+                    calcularEAtualizarProgresso(missaoEmExibicao);
+                }
+            });
 
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("ERRO DE SISTEMA");
-            alerta.setHeaderText("Ação Inválida");
-            alerta.setContentText("Nenhuma missão foi selecionado no painel tático. Selecione uma missão");
-
-            alerta.showAndWait();
+            if (missaoEmExibicao == null) {
+                checkboxesTemporarios.add(cb);
+                renderizarLinhaEtapaNoPopUp(cb, checkboxesTemporarios);
+            } else {
+                missaoEmExibicao.getCheckboxesSalvos().add(cb);
+                renderizarLinhaEtapaNoPopUp(cb, missaoEmExibicao.getCheckboxesSalvos());
+                calcularEAtualizarProgresso(missaoEmExibicao);
+            }
+            campoNovaEtapa.clear();
         }
-
-
     }
 
-    private void exibirPopupGif(String nomeArquivoGif) {
+    private void renderizarLinhaEtapaNoPopUp(CheckBox cb, List<CheckBox> listaOrigem) {
+        HBox linha = new HBox(10);
+        linha.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        HBox.setHgrow(cb, Priority.ALWAYS);
+        cb.setMaxWidth(Double.MAX_VALUE);
+
+        // Botão de deletar etapa aprimorado via CSS (.btn-deletar-etapa)
+        Button btnDeletar = new Button("REMOVER");
+        btnDeletar.getStyleClass().add("btn-deletar-etapa");
+
+        btnDeletar.setOnAction(e -> {
+            containerEtapas.getChildren().remove(linha);
+            listaOrigem.remove(cb);
+            if (missaoEmExibicao != null) {
+                calcularEAtualizarProgresso(missaoEmExibicao);
+            }
+        });
+
+        linha.getChildren().addAll(cb, btnDeletar);
+        containerEtapas.getChildren().add(linha);
+    }
+
+    @FXML
+    protected void onSalvarMissaoCompletaClick() {
+        if (missaoEmExibicao != null) {
+            calcularEAtualizarProgresso(missaoEmExibicao);
+            overlayPopup.setVisible(false);
+            missaoEmExibicao = null;
+            return;
+        }
+
         try {
-            // 1. Carrega o GIF da pasta de recursos
-            Image imagem = new Image(getClass().getResourceAsStream(nomeArquivoGif));
-            ImageView imageView = new ImageView(imagem);
-            imageView.setFitWidth(400); // Ajuste o tamanho conforme o seu GIF
-            imageView.setPreserveRatio(true);
+            java.net.URL urlFxml = HelloController.class.getResource("missao-card.fxml");
+            if (urlFxml == null) return;
 
-            // 2. Coloca o GIF dentro de um container
-            StackPane painel = new StackPane(imageView);
-            painel.setStyle("-fx-background-color: transparent;"); // Fundo transparente
+            FXMLLoader loader = new FXMLLoader(urlFxml);
+            VBox novoCard = loader.load();
 
-            // 3. Cria uma nova janela (Stage) para o Pop-up
-            Stage popupStage = new Stage();
-            // O correto é passar Color.TRANSPARENT para a cena nascer sem fundo
-            Scene cenaPopup = new Scene(painel, 400, 300, Color.TRANSPARENT);
-            cenaPopup.setFill(null); // Remove o fundo branco padrão da cena
+            Label lblTitulo = (Label) novoCard.lookup("#tituloCard");
+            if (lblTitulo != null) lblTitulo.setText(tituloTemporario);
 
-            popupStage.setScene(cenaPopup);
-            popupStage.initStyle(StageStyle.TRANSPARENT); // Remove as bordas do Windows (X, minimizar, etc)
-            popupStage.setAlwaysOnTop(true); // Faz o GIF aparecer na frente de tudo
+            Label lblDesc = (Label) novoCard.lookup("#descricaoCard");
+            if (lblDesc != null) lblDesc.setText("Diretrizes de Operação Ativas.");
 
-            // 4. Mostra o GIF
-            popupStage.show();
+            List<CheckBox> cbsDestaMissao = new ArrayList<>(checkboxesTemporarios);
+            Missao novaMissao = new Missao(categoriaAtual, novoCard, cbsDestaMissao);
 
-            // 5. Cronômetro: Fecha a janela automaticamente após 3 segundos
-            PauseTransition delay = new PauseTransition(Duration.seconds(3));
-            delay.setOnFinished(event -> popupStage.close());
-            delay.play();
+            novoCard.setOnMouseClicked(e -> reabrirPopupComPassosSalvos(novaMissao));
 
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar o GIF: " + e.getMessage());
+            bancoDeMissoes.add(novaMissao);
+            mosaicoMissoes.getChildren().add(novoCard);
+
+            calcularEAtualizarProgresso(novaMissao);
+            overlayPopup.setVisible(false);
+
+        } catch (IOException e) {
+            System.out.println("Erro crítico ao forjar card: " + e.getMessage());
+        }
+    }
+
+    // CRUD: Ação de Deletar a Missão inteira da existência
+    @FXML
+    protected void onDeletarMissaoCompletaClick() {
+        if (missaoEmExibicao != null) {
+            bancoDeMissoes.remove(missaoEmExibicao); // Remove do banco
+            mosaicoMissoes.getChildren().remove(missaoEmExibicao.getCardVisual()); // Remove da tela
+            overlayPopup.setVisible(false);
+            missaoEmExibicao = null;
+        } else {
+            // Se o usuário clicar em deletar enquanto está criando, apenas fecha sem salvar nada
+            overlayPopup.setVisible(false);
+        }
+    }
+
+    private void reabrirPopupComPassosSalvos(Missao missao) {
+        missaoEmExibicao = missao;
+        lblPopupTitulo.setText(((Label) missao.getCardVisual().lookup("#tituloCard")).getText());
+        containerEtapas.getChildren().clear();
+
+        for (CheckBox cb : missao.getCheckboxesSalvos()) {
+            renderizarLinhaEtapaNoPopUp(cb, missao.getCheckboxesSalvos());
+        }
+        overlayPopup.setVisible(true);
+    }
+
+    private void calcularEAtualizarProgresso(Missao missao) {
+        if (missao == null) return;
+
+        List<CheckBox> totalCheckboxes = missao.getCheckboxesSalvos();
+        double total = totalCheckboxes.size();
+        double concluidos = 0;
+
+        for (CheckBox cb : totalCheckboxes) {
+            if (cb.isSelected()) concluidos++;
+        }
+
+        double porcentagem = (total > 0) ? (concluidos / total) : 0.0;
+
+        Label lblStatus = (Label) missao.getCardVisual().lookup(".card-texto-status");
+        Label lblContagem = (Label) missao.getCardVisual().lookup(".card-texto-progresso");
+        VBox barraPreenchimento = (VBox) missao.getCardVisual().lookup(".card-progresso-preenchimento");
+
+        if (lblContagem != null) lblContagem.setText((int)concluidos + "/" + (int)total + " Etapas");
+        if (barraPreenchimento != null) {
+            barraPreenchimento.setPrefWidth(250.0 * porcentagem);
+        }
+
+        // Se a missão já foi enviada para o arquivo de completas, mantém o status fixado
+        if (missao.getCategoria().equals("COMPLETAS")) {
+            if (lblStatus != null) lblStatus.setText("STATUS: ARQUIVADA 🏆");
+            return;
+        }
+
+        // MECÂNICA DE CONCLUÍDA + BOTÃO DE ENVIAR PARA NOVA ABA
+        if (porcentagem == 1.0 && total > 0) {
+            if (lblStatus != null) lblStatus.setText("STATUS: CONCLUÍDA");
+            if (lblStatus != null) lblStatus.setStyle("-fx-text-fill: #00FF66;");
+
+            if (!missao.getCardVisual().getStyleClass().contains("card-concluido")) {
+                missao.getCardVisual().getStyleClass().add("card-concluido");
+
+                // CRIA O BOTÃO DINÂMICO DE ARQUIVAMENTO DENTRO DO CARD
+                Button btnArquivar = new Button("ARQUIVAR MISSÃO ➔");
+                btnArquivar.getStyleClass().add("btn-arquivar-card");
+                btnArquivar.setOnAction(e -> {
+                    missao.setCategoria("COMPLETAS"); // Altera o destino no banco
+                    atualizarMosaicoNaTela(); // Remove o card do painel ativo na hora!
+                });
+
+                missao.getCardVisual().getChildren().add(btnArquivar);
+            }
+        } else {
+            if (lblStatus != null) lblStatus.setText("STATUS: EM EXECUÇÃO");
+            if (lblStatus != null) lblStatus.setStyle("-fx-text-fill: #45f3ff;");
+            missao.getCardVisual().getStyleClass().remove("card-concluido");
+
+            // Remove o botão de arquivamento caso o usuário desmarque um passo
+            missao.getCardVisual().getChildren().removeIf(node -> node instanceof Button);
+        }
+    }
+
+    private void atualizarMosaicoNaTela() {
+        mosaicoMissoes.getChildren().clear();
+        for (Missao missao : bancoDeMissoes) {
+            if (missao.getCategoria().equals(categoriaAtual)) {
+                mosaicoMissoes.getChildren().add(missao.getCardVisual());
+            }
         }
     }
 
     @FXML
-    protected void onFracassarMissaoClick() {
-        // 1. Pega a missão selecionada
-        int indiceSelecionado = listaTarefas.getSelectionModel().getSelectedIndex();
-
-        if (indiceSelecionado >= 0) {
-            // 2. Remove a missão que falhou
-            listaTarefas.getItems().remove(indiceSelecionado);
-
-            // 3. Dispara o GIF de Fracasso (ex: YOU DIED ou MISSION FAILED)
-            exibirPopupGif("fracasso.gif");
-        } else {
-            // Exibe o mesmo pop-up de aviso se nada estiver selecionado
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("ERRO DE SISTEMA");
-            alerta.setHeaderText("Ação Inválida!");
-            alerta.setContentText("Nenhuma missão foi selecionada para ser abortada. Selecione um alvo no painel.");
-            alerta.showAndWait();
+    protected void onFecharPopupClick() {
+        if (missaoEmExibicao != null) {
+            calcularEAtualizarProgresso(missaoEmExibicao);
         }
+        overlayPopup.setVisible(false);
+        missaoEmExibicao = null;
     }
 }

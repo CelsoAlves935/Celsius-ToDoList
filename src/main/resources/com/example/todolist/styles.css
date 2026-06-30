@@ -1,104 +1,286 @@
-/* 1. O Fundo do Aplicativo com a sua Imagem */
+/* ========================================================================= */
+/* 1. CONFIGURAÇÃO DO FUNDO DO APLICATIVO */
+/* ========================================================================= */
 .root {
     -fx-background-image: url("fundo.png");
-    -fx-background-size: cover; /* Faz a imagem cobrir a janela toda */
+    -fx-background-size: cover;
     -fx-background-position: center;
-    -fx-padding: 20px;
+    -fx-padding: 0px;
 }
 
-/* 2. O Campo de Texto (Estilo Terminal) */
+/* ========================================================================= */
+/* 2. CAMPOS DE ENTRADA (INPUTS) E BOTÕES PADRÃO */
+/* ========================================================================= */
 .text-field {
-    -fx-background-color: #0b0c10;
-    -fx-text-fill: #66fcf1; /* Texto em Azul Ciano brilhante */
-    -fx-border-color: #1f2833;
+    -fx-background-color: rgba(11, 12, 16, 0.85);
+    -fx-text-fill: #45f3ff;
+    -fx-border-color: #1e293b;
     -fx-border-width: 2px;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-font-family: "Consolas", monospace;
+    -fx-padding: 8px;
 }
 .text-field:focused {
-    -fx-border-color: #45f3ff; /* Brilha mais forte quando selecionado */
+    -fx-border-color: #45f3ff;
 }
 
-/* 3. O Botão 3D (Efeito de relevo clássico de jogos) */
 .button {
-    /* Degradê linear: topo mais claro, base mais escura para dar volume */
     -fx-background-color: linear-gradient(to bottom, #1f4068, #162447);
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-font-family: "Impact", "Arial Black", sans-serif;
-    -fx-font-size: 13px;
-
-    /* Borda interna clara no topo e escura na base (Truque do efeito 3D) */
+    -fx-font-family: "Impact", sans-serif;
     -fx-border-color: #45f3ff #0f172a #0f172a #45f3ff;
     -fx-border-width: 2px;
     -fx-border-radius: 3px;
-
-    /* Sombra projetada atrás do botão */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 3);
+    -fx-padding: 8px 15px;
 }
-
 .button:hover {
-    /* Clarea o botão quando o mouse passa por cima */
     -fx-background-color: linear-gradient(to bottom, #244d7d, #1b2d5a);
     -fx-cursor: hand;
 }
 
-.button:armed {
-    /* Efeito de "afundar" o botão 3D quando clicado */
-    -fx-background-color: linear-gradient(to bottom, #111b35, #162447);
-    -fx-border-color: #0f172a #45f3ff #45f3ff #0f172a; /* Inverte as bordas */
-    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.8), 5, 0.0, 0, 1);
-}
-
-/* 4. A Lista de Missões Transparente (Deixa ver o fundo) */
-.list-view {
-    /* Fundo preto com 75% de opacidade (semi-transparente) */
-    -fx-background-color: rgba(10, 12, 16, 0.75);
-    -fx-border-color: #1f4068;
+/* ========================================================================= */
+/* 3. SIDEBAR (PAINEL DE CATEGORIAS) */
+/* ========================================================================= */
+.sidebar {
+    -fx-background-color: rgba(10, 12, 16, 0.9);
+    -fx-border-color: transparent #1e293b transparent transparent;
     -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-padding: 5px;
 }
 
-/* Elementos dentro da lista */
-.list-cell {
-    -fx-background-color: transparent; /* Transparente para não cobrir a lista */
-    -fx-text-fill: #e4e4e7;
+.titulo-sidebar {
+    -fx-font-family: "Impact", sans-serif;
+    -fx-font-size: 16px;
+    -fx-text-fill: #45f3ff;
+    -fx-alignment: center;
+}
+
+.divisor {
+    -fx-min-height: 2px;
+    -fx-max-height: 2px;
+    -fx-background-color: rgba(69, 243, 255, 0.2);
+}
+
+.bloco-botoes-categoria {
+    -fx-padding: 5px 0px 5px 0px;
+}
+
+.btn-categoria {
+    -fx-background-color: linear-gradient(to bottom, #14243b, #0d1624);
+    -fx-text-fill: #94a3b8;
     -fx-font-family: "Consolas", monospace;
-    -fx-font-size: 14px;
-    -fx-padding: 10px;
-    -fx-border-color: transparent transparent rgba(69, 243, 255, 0.2) transparent; /* Linha sutil azul separando missões */
+    -fx-font-size: 12px;
+    -fx-border-color: rgba(69, 243, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 10px 12px;
+}
+.btn-categoria:hover {
+    -fx-background-color: linear-gradient(to bottom, #1f4068, #162447);
+    -fx-text-fill: #ffffff;
+}
+.btn-categoria:focused, .btn-categoria:selected {
+    -fx-border-color: #45f3ff;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
 }
 
-.list-cell:selected {
-    -fx-background-color: rgba(69, 243, 255, 0.2); /* Destaque azul ao selecionar */
+/* ========================================================================= */
+/* 4. ÁREA DOS CARDS (MOSAICO FLUTUANTE) */
+/* ========================================================================= */
+.scroll-mosaico {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.scroll-mosaico > .viewport {
+    -fx-background-color: transparent;
+}
+.area-cards {
+    -fx-background-color: transparent;
+}
+
+.card-missao {
+    -fx-background-color: linear-gradient(to bottom, rgba(30, 64, 104, 0.85), rgba(22, 36, 71, 0.85));
+    -fx-border-color: rgba(69, 243, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0.0, 0, 4);
+}
+.card-missao:hover {
+    -fx-border-color: #45f3ff;
+    -fx-effect: dropshadow(three-pass-box, rgba(69, 243, 255, 0.7), 15, 0, 0, 0);
+}
+
+.card-titulo {
+    -fx-font-family: "Impact", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
+}
+
+.divisor-card {
+    -fx-min-height: 1px;
+    -fx-max-height: 1px;
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+}
+
+.card-descricao {
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 11px;
+    -fx-text-fill: #cbd5e1;
+}
+
+.card-texto-status {
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
     -fx-text-fill: #45f3ff;
 }
 
-/* Botão estilo sucesso (Verde Militar / Holográfico) */
-.btn-sucesso {
-    -fx-background-color: linear-gradient(to bottom, #116530, #0B4619);
-    -fx-border-color: #00FF66 #05210C #05210C #00FF66;
-}
-.btn-sucesso:hover {
-    -fx-background-color: linear-gradient(to bottom, #188742, #116530);
-}
-.btn-sucesso:armed {
-    -fx-background-color: linear-gradient(to bottom, #05210C, #0B4619);
-    -fx-border-color: #05210C #00FF66 #00FF66 #05210C;
+.card-texto-progresso {
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 10px;
+    -fx-text-fill: #94a3b8;
 }
 
-/* Botão estilo fracasso (Vermelho Alerta / Destrutivo) */
-.btn-fracasso {
-    -fx-background-color: linear-gradient(to bottom, #8b0000, #4a0000);
-    -fx-border-color: #ff3333 #210000 #210000 #ff3333;
+.card-area-progresso {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-min-height: 4px;
+    -fx-max-height: 4px;
+    -fx-background-radius: 2px;
 }
-.btn-fracasso:hover {
-    -fx-background-color: linear-gradient(to bottom, #b30000, #8b0000);
+.card-progresso-preenchimento {
+    -fx-background-color: linear-gradient(to right, #45f3ff, #00FF66);
+    -fx-min-height: 4px;
+    -fx-max-height: 4px;
+    -fx-background-radius: 2px;
 }
-.btn-fracasso:armed {
-    -fx-background-color: linear-gradient(to bottom, #210000, #4a0000);
-    -fx-border-color: #210000 #ff3333 #ff3333 #210000;
+
+/* Card com 100% de progresso */
+.card-concluido {
+    -fx-background-color: linear-gradient(to bottom, rgba(16, 185, 129, 0.2), rgba(6, 78, 59, 0.85));
+    -fx-border-color: #10b981;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.6), 15, 0, 0, 0);
+}
+
+/* Botão embutido no card para arquivar */
+.btn-arquivar-card {
+    -fx-background-color: linear-gradient(to bottom, #065f46, #064e3b);
+    -fx-text-fill: #a7f3d0;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-border-color: #10b981;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 3px 6px;
+}
+.btn-arquivar-card:hover {
+    -fx-background-color: #10b981;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
+
+/* ========================================================================= */
+/* 5. ESTILIZAÇÃO DO POP-UP (OVERLAY DE ETAPAS) */
+/* ========================================================================= */
+.popup-fundo-escuro {
+    -fx-background-color: rgba(0, 0, 0, 0.75);
+}
+
+.popup-caixa-interna {
+    -fx-background-color: #05070a;
+    -fx-border-color: #1e3a8a;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.9), 25, 0.0, 0, 10);
+}
+
+.popup-titulo {
+    -fx-font-family: "Impact", sans-serif;
+    -fx-font-size: 18px;
+    -fx-text-fill: #45f3ff;
+}
+
+.popup-btn-fechar-gigante {
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-text-fill: #ef4444;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 2px 14px 5px 14px;
+    -fx-border-color: #ef4444;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+.popup-btn-fechar-gigante:hover {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
+
+.popup-scroll-etapas {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.popup-scroll-etapas > .viewport {
+    -fx-background-color: transparent;
+}
+
+.popup-checkbox {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 13px;
+}
+.popup-checkbox .box {
+    -fx-background-color: #0f172a;
+    -fx-border-color: #45f3ff;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+}
+.popup-checkbox:selected .box {
+    -fx-background-color: #00FF66;
+    -fx-border-color: #00FF66;
+}
+.popup-checkbox:selected {
+    -fx-text-fill: #00FF66;
+}
+
+/* Botão de exclusão de etapas individuais */
+.btn-deletar-etapa {
+    -fx-background-color: rgba(239, 68, 68, 0.15);
+    -fx-text-fill: #ef4444;
+    -fx-border-color: rgba(239, 68, 68, 0.4);
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 4px 8px;
+}
+.btn-deletar-etapa:hover {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
+
+/* Botão Abandonar Missão (Deletar Card) */
+.popup-btn-abandonar {
+    -fx-background-color: linear-gradient(to bottom, #7f1d1d, #450a0a);
+    -fx-text-fill: #fca5a5;
+    -fx-font-family: "Impact", sans-serif;
+    -fx-border-color: #ef4444;
+    -fx-border-width: 2px;
+    -fx-border-radius: 3px;
+    -fx-padding: 8px 15px;
+}
+.popup-btn-abandonar:hover {
+    -fx-background-color: linear-gradient(to bottom, #991b1b, #6b1111);
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
 }

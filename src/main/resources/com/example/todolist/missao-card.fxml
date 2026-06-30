@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefWidth="280.0" prefHeight="180.0" styleClass="card-missao" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets top="15.0" bottom="15.0" left="15.0" right="15.0"/>
+    </padding>
+    
+    <Label fx:id="tituloCard" text="NOME DA MISSÃO" styleClass="card-titulo" />
+    <VBox styleClass="divisor-card"/>
+    <Label fx:id="descricaoCard" text="Diretrizes detalhadas..." wrapText="true" VBox.vgrow="ALWAYS" styleClass="card-descricao" />
+    
+    <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="card-area-status">
+        <Label text="STATUS: INICIADA" styleClass="card-texto-status"/>
+        <Label text="0/0 Etapas" styleClass="card-texto-progresso"/>
+    </HBox>
+    <VBox styleClass="card-area-progresso">
+        <VBox styleClass="card-progresso-preenchimento" prefWidth="0.0"/>
+    </VBox>
+</VBox>

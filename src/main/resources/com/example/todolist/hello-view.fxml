@@ -2,31 +2,76 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<StackPane fx:id="painelRaiz" prefHeight="600.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="com.example.todolist.HelloController" stylesheets="@styles.css" styleClass="root">
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="com.example.todolist.HelloController" stylesheets="@styles.css">
+    <HBox spacing="0.0">
+        <VBox spacing="15.0" prefWidth="250.0" styleClass="sidebar">
+            <padding><Insets top="20.0" bottom="20.0" left="20.0" right="20.0" /></padding>
 
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+            <Label text="PAINEL DE CAMPANHAS" styleClass="titulo-sidebar" />
+            <VBox styleClass="divisor" />
 
-    <HBox spacing="10.0" alignment="CENTER">
-        <TextField fx:id="campoNovaTarefa" promptText="Digite a nova missão..." HBox.hgrow="ALWAYS"  onAction="#onAdicionarTarefaClick"/>
-        <Button text="Adicionar" onAction="#onAdicionarTarefaClick" />
+            <VBox spacing="10.0" styleClass="bloco-botoes-categoria">
+                <Button fx:id="btnImportantes" text="TAREFAS IMPORTANTES" styleClass="btn-categoria" maxWidth="Infinity" onAction="#onCategoriaClick" userData="IMPORTANTES"/>
+                <Button fx:id="btnDiarias" text="TAREFAS DIÁRIAS" styleClass="btn-categoria" maxWidth="Infinity" onAction="#onCategoriaClick" userData="DIARIAS"/>
+                <Button fx:id="btnManutencoes" text="MANUTENÇÕES" styleClass="btn-categoria" maxWidth="Infinity" onAction="#onCategoriaClick" userData="MANUTENCOES"/>
+                <Button fx:id="btnCompletas" text="🏆 MISSÕES COMPLETAS" styleClass="btn-categoria" maxWidth="Infinity" onAction="#onCategoriaClick" userData="COMPLETAS"/>
+            </VBox>
+        </VBox>
+
+        <VBox spacing="20.0" HBox.hgrow="ALWAYS">
+            <padding><Insets top="20.0" bottom="20.0" left="20.0" right="20.0" /></padding>
+
+            <HBox spacing="10.0" alignment="CENTER">
+                <TextField fx:id="campoNovaTarefa" promptText="Inserir título da nova missão..." HBox.hgrow="ALWAYS" onAction="#onAdicionarTarefaClick" />
+                <Button text="Adicionar" onAction="#onAdicionarTarefaClick" />
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-mosaico">
+                <content>
+                    <FlowPane fx:id="mosaicoMissoes" hgap="15.0" vgap="15.0" styleClass="area-cards">
+                        <padding><Insets top="10.0" bottom="10.0" left="10.0" right="10.0" /></padding>
+                    </FlowPane>
+                </content>
+            </ScrollPane>
+        </VBox>
     </HBox>
 
-    <ListView fx:id="listaTarefas" VBox.vgrow="ALWAYS">
-        <VBox.margin>
-            <Insets bottom="10.0" />
-        </VBox.margin>
-    </ListView>
+    <VBox fx:id="overlayPopup" alignment="CENTER" visible="false" styleClass="popup-fundo-escuro">
+        <VBox maxWidth="550.0" maxHeight="500.0" spacing="15.0" styleClass="popup-caixa-interna">
+            <padding><Insets top="20.0" bottom="20.0" left="25.0" right="25.0" /></padding>
 
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="lblPopupTitulo" text="CONFIGURAR DIRETRIZES DA MISSÃO" styleClass="popup-titulo" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button text="✕" onAction="#onFecharPopupClick" styleClass="popup-btn-fechar-gigante"/>
+            </HBox>
 
-    <Button text="COMPLETAR MISSÃO" onAction="#onCompletarMissaoClick" maxWidth="Infinity" styleClass="btn-sucesso"/>
+            <VBox styleClass="divisor-card"/>
 
-    <Button text="FRACASSAR MISSÃO" onAction="#onFracassarMissaoClick" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="btn-fracasso" />
-</VBox>
+            <HBox spacing="10.0" alignment="CENTER">
+                <TextField fx:id="campoNovaEtapa" promptText="Digite um passo/etapa para esta missão..." HBox.hgrow="ALWAYS" onAction="#onAdicionarEtapaClick"/>
+                <Button text="＋" onAction="#onAdicionarEtapaClick" styleClass="button"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="popup-scroll-etapas">
+                <content>
+                    <VBox fx:id="containerEtapas" spacing="12.0">
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+            <HBox spacing="10.0">
+                <Button text="ABANDONAR MISSÃO" onAction="#onDeletarMissaoCompletaClick" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="popup-btn-abandonar"/>
+                <Button text="SALVAR DIRETRIZES" onAction="#onSalvarMissaoCompletaClick" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="button"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>
